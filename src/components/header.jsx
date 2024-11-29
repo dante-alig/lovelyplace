@@ -1,9 +1,23 @@
 import { useLocation, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import logo from "../assets/images/lovelyplaceparis.png";
+import { useState } from "react";
 
 const Header = () => {
   const location = useLocation(); // Obtient l'emplacement actuel
+  const [isModalOpen, setIsModalOpen] = useState(false); // État pour gérer l'ouverture de la modale
+
+  // Fonction pour ouvrir/fermer la modale
+  const toggleModal = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
+  // Fonction pour fermer la modale en cliquant sur l'arrière-plan
+  const closeModalOnClickOutside = (e) => {
+    if (e.target.className === "modal-overlay") {
+      setIsModalOpen(false);
+    }
+  };
 
   return (
     <div className="header-global">
@@ -16,7 +30,7 @@ const Header = () => {
             </Link>
           </div>
           <div className="header-search"></div>
-          <div className="header-profil">
+          <div className="header-profil" onClick={toggleModal}>
             <FontAwesomeIcon icon="fa-solid fa-user" />
             <p>Se connecter</p>
           </div>
@@ -37,6 +51,27 @@ const Header = () => {
           </div>
         )}
       </div>
+
+      {/* Modale */}
+      {isModalOpen && (
+        <div className="modal-overlay" onClick={closeModalOnClickOutside}>
+          <div className="modal-content">
+            <h2>Se connecter</h2>
+            <form>
+              <input type="email" placeholder="Votre email" required />
+              <input
+                type="password"
+                placeholder="Votre mot de passe"
+                required
+              />
+              <button type="submit">Connexion</button>
+              <button className="premium">
+                <p>Devenir membre Premium</p>
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
