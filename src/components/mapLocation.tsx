@@ -1,11 +1,10 @@
-import React from "react";
+import React, { useContext, useState, useEffect } from "react";
 import {
   APIProvider,
   Map,
   MapCameraChangedEvent,
 } from "@vis.gl/react-google-maps";
 import PoiMarkers from "./PoiMarkers";
-import { useContext, useState, useEffect } from "react";
 import { MyContext } from "../context/myContext";
 import { addressToCoordinates } from "../utils/addressToCoordinates";
 
@@ -22,13 +21,35 @@ const MapLocation = () => {
   const { items } = useContext(MyContext);
 
   const [locations, setLocations] = useState<Poi[]>([]);
+  const [userLocation, setUserLocation] = useState<google.maps.LatLngLiteral>({
+    lat: 48.8566, // Coordonnées par défaut (Paris)
+    lng: 2.3522,
+  });
+
+  useEffect(() => {
+    // Géolocalisation de l'utilisateur
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setUserLocation({ lat: latitude, lng: longitude });
+        },
+        (error) => {
+          console.error("Erreur de géolocalisation :", error);
+        }
+      );
+    } else {
+      console.error(
+        "La géolocalisation n'est pas supportée par ce navigateur."
+      );
+    }
+  }, []);
 
   useEffect(() => {
     const fetchLocations = async () => {
-      // Création d'une liste de Promises
       const promises = items.map(async (item) => {
         const key = item.locationName;
-        const locationAdress = `${item.locationAddress} ${item.postalCode}`; // Ajout d'un espace
+        const locationAdress = `${item.locationAddress} ${item.postalCode}`;
         const locationDescription = item.locationDescription;
         const photo = item.photos[0];
         const id = item._id;
@@ -41,7 +62,6 @@ const MapLocation = () => {
         );
       });
 
-      // Résolution des Promises et suppression des valeurs nulles
       const results = (await Promise.all(promises)).filter(
         (loc) => loc !== null
       );
@@ -60,7 +80,7 @@ const MapLocation = () => {
       >
         <Map
           defaultZoom={13}
-          defaultCenter={{ lat: 48.8566, lng: 2.3522 }}
+          defaultCenter={userLocation} // Centré sur la position utilisateur
           mapId="55c6528e13212143"
           onCameraChanged={(ev: MapCameraChangedEvent) =>
             console.log(
@@ -71,7 +91,23 @@ const MapLocation = () => {
             )
           }
         >
-          <PoiMarkers pois={locations} />
+          {/* Affichage des POIs */}
+          <PoiMarkers pois={locations} color="#FBBC04" />
+
+          {/* Ajout d'un marqueur pour la position utilisateur */}
+          <PoiMarkers
+            pois={[
+              {
+                key: "user-location",
+                location: userLocation,
+                title: "Votre position",
+                description: "Vous êtes ici",
+                image: "",
+                id: "user",
+              },
+            ]}
+            color="#DA443B"
+          />
         </Map>
       </APIProvider>
     </div>
