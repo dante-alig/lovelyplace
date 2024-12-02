@@ -5,11 +5,6 @@ export const fetchDataItems = async (
   setLoadingData,
   categorieItems,
   filterParams
-  // queryParams = {
-  //   postalCode: "75001 Paris",
-  //   priceRange: "15€",
-  //   filters: ["Ambiance:Détendue", "Niveau de bruit:Bruyant"],
-  // }
 ) => {
   try {
     setLoadingData(true); // Commence le chargement
@@ -19,10 +14,11 @@ export const fetchDataItems = async (
     const url = `http://localhost:3000/${categorieItems}${
       queryString ? `?${queryString}` : ""
     }`;
-
+    console.log("filterParams>>>>", filterParams);
     const response = await axios.get(url);
     const data = response.data;
     console.log("Données récupérées avec succès :", data);
+
     setItems(data);
   } catch (error) {
     console.error("Erreur lors de la récupération des données :", error);

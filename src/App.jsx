@@ -12,6 +12,10 @@ import {
   faStar,
   faXmark,
   faUser,
+  faEuroSign,
+  faUmbrellaBeach,
+  faSnowflake,
+  faLocationCrosshairs,
 } from "@fortawesome/free-solid-svg-icons";
 import "./App.css";
 import Home from "./pages/home";
@@ -31,7 +35,11 @@ library.add(
   faInstagram,
   faClock,
   faXmark,
-  faUser
+  faUser,
+  faEuroSign,
+  faSnowflake,
+  faUmbrellaBeach,
+  faLocationCrosshairs
 );
 
 function App() {

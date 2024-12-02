@@ -7,6 +7,10 @@ export const MyContextProvider = ({ children }) => {
   const [adminLogin, setAdminLogin] = useState(false);
   const [categorieItems, setCategorieItems] = useState("drink");
   const [filterParams, setFilterParams] = useState(null);
+  const [address, setAddress] = useState("");
+  const [priceRange, setPriceRange] = useState("");
+  const [season, setSeason] = useState("été");
+  const [cuisine, setCuisine] = useState("");
 
   return (
     <MyContext.Provider
@@ -23,6 +27,14 @@ export const MyContextProvider = ({ children }) => {
         setCategorieItems,
         filterParams,
         setFilterParams,
+        address,
+        setAddress,
+        priceRange,
+        setPriceRange,
+        season,
+        setSeason,
+        cuisine,
+        setCuisine,
       }}
     >
       {children}
